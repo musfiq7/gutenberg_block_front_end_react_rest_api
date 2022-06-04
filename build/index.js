@@ -105,8 +105,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 wp.blocks.registerBlockType("makeupnamespace/make-up-block-name", {
-  title: "Brads Boilerplate Block",
-  icon: "welcome-learn-more",
+  title: "React Dynamic Block",
+  // icon: "welcome-learn-more",
+  icon: "buddicons-activity",
   category: "common",
   attributes: {
     skyColor: {
