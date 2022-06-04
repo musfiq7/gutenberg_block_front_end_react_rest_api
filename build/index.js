@@ -14,6 +14,26 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "react":
+/*!************************!*\
+  !*** external "React" ***!
+  \************************/
+/***/ (function(module) {
+
+module.exports = window["React"];
+
+/***/ }),
+
+/***/ "react-dom":
+/*!***************************!*\
+  !*** external "ReactDOM" ***!
+  \***************************/
+/***/ (function(module) {
+
+module.exports = window["ReactDOM"];
+
+/***/ }),
+
 /***/ "@wordpress/element":
 /*!*********************************!*\
   !*** external ["wp","element"] ***!
@@ -102,6 +122,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./index.scss */ "./src/index.scss");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-dom */ "react-dom");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_3__);
+
+
 
 
 wp.blocks.registerBlockType("makeupnamespace/make-up-block-name", {
@@ -117,39 +143,77 @@ wp.blocks.registerBlockType("makeupnamespace/make-up-block-name", {
       type: "string"
     }
   },
-  edit: EditComponent,
+  edit: () => {
+    const [posts, setPosts] = (0,react__WEBPACK_IMPORTED_MODULE_2__.useState)([]);
+    const [index, setIndex] = react__WEBPACK_IMPORTED_MODULE_2___default().useState(0);
+    const timeoutRef = react__WEBPACK_IMPORTED_MODULE_2___default().useRef(null);
+    var url = 'http://localhost/theme1/wp-json/wp/v2/posts';
+    (0,react__WEBPACK_IMPORTED_MODULE_2__.useEffect)(() => {
+      fetch(url).then(response => response.json()).then(data => setPosts(data));
+    }, []);
+    const delay = 2500;
+
+    function resetTimeout() {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    }
+
+    react__WEBPACK_IMPORTED_MODULE_2___default().useEffect(() => {
+      resetTimeout();
+      timeoutRef.current = setTimeout(() => setIndex(prevIndex => prevIndex === posts.length - 1 ? 0 : prevIndex + 1), delay);
+      return () => {
+        resetTimeout();
+      };
+    }, [index]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "slideshow"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "slideshowSlider",
+      style: {
+        transform: `translate3d(${-index * 100}%, 0, 0)`
+      }
+    }, posts.slice(0, 5).map(post => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "slide",
+      key: index
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("img", {
+      src: post.featured_image_src,
+      alt: ""
+    }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "text-content"
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, " ", (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("a", {
+      href: post.link
+    }, " ", post.title.rendered)), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+      dangerouslySetInnerHTML: {
+        __html: post.excerpt.rendered
+      }
+    }))))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "slideshowDots"
+    }, posts.slice(0, 5).map((_, idx) => (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: idx,
+      className: `slideshowDot${index === idx ? " active" : ""}`,
+      onClick: () => {
+        setIndex(idx);
+      }
+    }))));
+  },
   save: function () {
     return null;
   }
-});
-
-function EditComponent(props) {
-  function updateSkyColor(e) {
-    props.setAttributes({
-      skyColor: e.target.value
-    });
-  }
-
-  function updateGrassColor(e) {
-    props.setAttributes({
-      grassColor: e.target.value
-    });
-  }
-
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "makeUpYourBlockTypeName"
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-    type: "text",
-    value: props.attributes.skyColor,
-    onChange: updateSkyColor,
-    placeholder: "sky color..."
-  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
-    type: "text",
-    value: props.attributes.grassColor,
-    onChange: updateGrassColor,
-    placeholder: "grass color..."
-  }));
-}
+}); // function EditComponent(props) {
+//   function updateSkyColor(e) {
+//     props.setAttributes({ skyColor: e.target.value })
+//   }
+//   function updateGrassColor(e) {
+//     props.setAttributes({ grassColor: e.target.value })
+//   }
+//   return (
+//     <div className="makeUpYourBlockTypeName">
+//       <input type="text" value={props.attributes.skyColor} onChange={updateSkyColor} placeholder="sky color..." />
+//       <input type="text" value={props.attributes.grassColor} onChange={updateGrassColor} placeholder="grass color..." />
+//     </div>
+//   )
+// }
 }();
 /******/ })()
 ;
